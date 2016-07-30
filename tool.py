@@ -164,12 +164,16 @@ if args.test:
 
 if args.load:
     print("Backing up eeprom")
-    dump2433()
+    #dump2433()
 
     # Flush the input stream b/c these are independant interations
     sp.flushInput()
     print("Flashing oldest stored")
     writeOldestToChip()
+
+
+
+
 else:
     print("Dumping eeprom")
     dump2433()
