@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
+
 import argparse, subprocess, sys, os
 import serial, time, binascii, os
 
@@ -133,20 +134,25 @@ def clearFlash():
 
 # Start the serial port up.  NB this is *nix specific, so needs changing for windows users.
 if "linux" in sys.platform:
-    possibleSerialPorts = [d for d in os.listdir("/dev") if "ttyACM" in d]
+    possibleSerialPorts = [d for d in os.listdir("/dev") if "ttyACM" in d or "ttyUSB" in d]
 elif sys.platform is "darwin":
     possibleSerialPorts = [d for d in os.listdir("/dev") if "tty.usbmodemfa131" in d]
 else:
     possibleSerialPorts = ["COM1", "COM2", "COM3", "COM4"]
 
 
+args = parser.parse_args()
 
-spAddy = os.path.join("/dev", possibleSerialPorts[0])
+try:
+    spAddy = os.path.join("/dev", possibleSerialPorts[0])
+except IndexError:
+    print("ERROR: no serial port found")
+    sys.exit(1)
+
 print( "Using serial port: " + spAddy)
 sp = serial.Serial(spAddy, baudrate=9600, timeout=3)
 sp.flushInput()
 
-args = parser.parse_args()
 
 if args.test:
     waitForChip()
